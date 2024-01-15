@@ -50,8 +50,12 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem "web-console"
   gem 'rubocop-rspec', require: false
-  gem "capistrano", "~> 3.10", require: false
-  gem "capistrano-rails", "~> 1.6", require: false
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-passenger'
+  gem 'capistrano-rails'
+  gem 'capistrano-rvm'
+  gem 'capistrano-sidekiq'
   gem 'ed25519'
   gem 'net-ssh'
   gem 'bcrypt_pbkdf'

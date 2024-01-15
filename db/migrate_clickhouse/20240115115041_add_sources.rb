@@ -2,6 +2,32 @@ class AddSources < ActiveRecord::Migration[7.0]
   def up
     connection.execute(<<~SQL.squish)
 
+          ticker,company_name,sector,industry,fin_currency,country,market_cap,acquirer_multiple,earning_yield_p,pe_ttm,ev,ev_calc,gross_margin_p,net_margin_p,roe_p,roa_p,roc_p,pb,operating_income,ebit,net_income,total_assets,cash,total_liabilities,shareholders_equity,preferred_stock_equity,minority_interest,total_capitalization,total_debt,working_capital
+          market_cap
+          acquirer_multiple
+          earning_yield_p
+          pe_ttm
+          ev
+          ev_calc
+          gross_margin_p
+          net_margin_p
+          roe_p,
+          roa_p,
+          roc_p,
+          pb,
+          operating_income,
+          ebit,
+          net_income,
+          total_assets,
+          cash,
+          total_liabilities,
+          shareholders_equity,
+          preferred_stock_equity,
+          minority_interest,
+          total_capitalization,
+          total_debt,
+          working_capital,
+
       CREATE TABLE tickers
         (
           ticker LowCardinality(String),

@@ -1,0 +1,56 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV['DATABASE_HOST'] %>
+  port: <%= ENV['DATABASE_PORT'] %>
+  database: <%= ENV['DATABASE_NAME'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+clickhouse_default: &clickhouse_default
+  adapter: clickhouse
+  migrations_paths: db/migrate_clickhouse
+  host: <%= ENV['CH_DATABASE_HOST'] %>
+  port: <%= ENV['CH_DATABASE_PORT'] %>
+  database: <%= ENV['CH_DATABASE_NAME'] %>
+  username: <%= ENV['CH_DATABASE_USERNAME'] %>
+  password:
+  timeout: 60000
+
+development:
+  primary:
+    <<: *default
+    prepared_statements: false
+    advisory_locks: false
+  clickhouse:
+    <<: *clickhouse_default
+    debug: true
+
+test:
+  primary:
+    <<: *default
+    database: stock_market_test
+    host: localhost
+    port: 5432
+    username: <%= ENV['TEST_DB_USERNAME'] %>
+    password: <%= ENV['TEST_DB_PASSWORD'] %>
+  clickhouse:
+    <<: *clickhouse_default
+    database: parsalytics_ads_test
+
+production:
+  primary:
+    <<: *default
+    prepared_statements: false
+    advisory_locks: false
+  clickhouse:
+    <<: *clickhouse_default
+
+staging:
+  primary:
+    <<: *default
+    prepared_statements: false
+    advisory_locks: false
+  clickhouse:
+    <<: *clickhouse_default

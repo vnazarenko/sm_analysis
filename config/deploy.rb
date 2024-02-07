@@ -25,7 +25,7 @@ ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system", "vendor", "storage"
-append :linked_files, ".env"
+append :linked_files, ".env", 'config/master.key'
 append :linked_dirs, "log", "storage", "tmp/pids", "tmp/cache", "tmp/sockets", ".bundle"
 set :rvm_custom_path, "/usr/share/rvm"
 set :rvm_ruby_version, '3.2.2'

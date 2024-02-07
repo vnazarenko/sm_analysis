@@ -1,0 +1,2 @@
+class Ticker < ClickhouseRecord
+end

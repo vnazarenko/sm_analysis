@@ -41,6 +41,8 @@ gem 'clickhouse-activerecord'
 gem 'dotenv-rails'
 gem 'pg'
 gem "dotenv", "~> 2.8"
+gem 'yard'
+gem 'kaminari'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

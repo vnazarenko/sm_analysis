@@ -13,6 +13,20 @@ class Api::TickersController < ApplicationController
   #     - :min (Integer) specifies the minimum gross margin percentage (inclusive).
   #     - :max (Integer, nil) specifies the maximum gross margin percentage (inclusive).
   #       If nil, there is no upper limit on the gross margin.
+  #   @option filter [String] :ticker (nil) Ticker symbol to include in the results.
+  #   @option filter [String] :company_name (nil) Company name to include in the results.
+  #   @option filter [Hash] :pe_ttm ({min: 0, max: nil}) PE TTM range for filtering.
+  #     - :min (Integer) specifies the minimum PE TTM (inclusive).
+  #     - :max (Integer, nil) specifies the maximum PE TTM (inclusive).
+  #       If nil, there is no upper limit on the PE TTM.
+  #   @option filter [Hash] :acquirer_multiple ({min: 0, max: nil}) Acquirer multiple range for filtering.
+  #     - :min (Integer) specifies the minimum acquirer multiple (inclusive).
+  #     - :max (Integer, nil) specifies the maximum acquirer multiple (inclusive).
+  #       If nil, there is no upper limit on the acquirer multiple.
+  #   @option filter [Hash] :earning_yield_p ({min: 0, max: nil}) Earning yield range for filtering.
+  #     - :min (Integer) specifies the minimum earning yield percentage (inclusive).
+  #     - :max (Integer, nil) specifies the maximum earning yield percentage (inclusive).
+  #       If nil, there is no upper limit on the earning yield.
   #   @param sort [Hash] The sorting criteria for the search results.
   #   @option sortBy [String] :field ("ticker") The field to sort the results by.
   #   @option sortOrder [String] :direction ("asc", "desc") The direction to sort the results by.
@@ -23,14 +37,15 @@ class Api::TickersController < ApplicationController
   # @return [JSON] A list of items that match the filter criteria.
   def index
     @tickers = Ticker.all
-    @tickers = @tickers.where(sector: params[:filter][:sector]) if params&.dig(:filter, :sector).present?
-    if params.dig(:filter, :grosMargin).present?
-      min_margin = params[:filter][:grosMargin][:min]
-      max_margin = params[:filter][:grosMargin][:max]
+    eq_filter_by(:sector, :sector)
+    range_filter_by(:gross_margin_p, :gross_margin_p)
+    eq_filter_by(:ticker, :ticker)
+    eq_filter_by(:company_name, :company_name)
+    range_filter_by(:pe_ttm, :pe_ttm)
+    range_filter_by(:acquirer_multiple, :acquirer_multiple)
+    range_filter_by(:earning_yield_p, :earning_yield_p)
 
-      @items = @items.where('gross_margin >= ?', min_margin) if min_margin.present?
-      @items = @items.where('gross_margin <= ?', max_margin) if max_margin.present?
-    end
+
     count = @tickers.count
     page = params.dig(:pagination, :page).to_i
     per_page = params.dig(:pagination, :perPage) || 25
@@ -38,5 +53,19 @@ class Api::TickersController < ApplicationController
     @tickers = @tickers.page(page).per(per_page)
 
     render json: {tickers: @tickers, total_count: count, page: page, per_page: per_page}
+  end
+
+  def range_filter_by(field, db_field)
+    if params.dig(:filter, field).present?
+      min = params[:filter][field][:min]
+      max = params[:filter][field][:max]
+
+      @tickers = @tickers.where("#{db_field} >= ?", min) if min.present?
+      @tickers = @tickers.where("#{db_field} <= ?", max) if max.present?
+    end
+  end
+
+  def eq_filter_by(field, db_field)
+    @tickers = @tickers.where(db_field => params.dig(:filter, field)) if params.dig(:filter, field).present?
   end
 end
